@@ -7,4 +7,90 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// id             String    @id @default(uuid()) @db.Uuid
+model Consulta {
+  id         String   @id @default(uuid()) @db.Uuid
+  data       DateTime @db.Timestamptz()
+  observacao String?
+
+  origemId        String        @db.Uuid
+  origem          Origem        @relation(fields: [origemId], references: [id])
+  classificacaoId String        @db.Uuid
+  classificacao   Classificacao @relation(fields: [classificacaoId], references: [id])
+  consulenteId    String        @db.Uuid
+  consulente      Consulente    @relation(fields: [consulenteId], references: [id])
+  versoId         String        @db.Uuid
+  verso           Verso         @relation(fields: [versoId], references: [id])
+  tipoConsultaId  String        @db.Uuid
+  tipoConsulta    TipoConsulta  @relation(fields: [tipoConsultaId], references: [id])
+
+  @@map("consultas")
+}
+
+model TipoConsulta {
+  id        String @id @default(uuid()) @db.Uuid
+  descricao String
+
+  consultas Consulta[]
+
+  @@map("tipos_consulta")
+}
+
+model Consulente {
+  id   String @id @default(uuid()) @db.Uuid
+  nome String
+
+  consultas Consulta[]
+
+  @@map("consulentes")
+}
+
+model OduIfa {
+  id        String @id @default(uuid()) @db.Uuid
+  descricao String
+
+  versos Verso[]
+
+  @@map("odus_ifa")
+}
+
+model Verso {
+  id        String @id @default(uuid()) @db.Uuid
+  numero    String
+  descricao String
+
+  oduIfaId  String     @db.Uuid
+  oduIfa    OduIfa     @relation(fields: [oduIfaId], references: [id])
+  consultas Consulta[]
+
+  @@map("versos")
+}
+
+model TipoClassificacao {
+  id        String @id @default(uuid()) @db.Uuid
+  descricao String
+
+  classificacoes Classificacao[]
+
+  @@map("tipos_classificacao")
+}
+
+model Classificacao {
+  id        String @id @default(uuid()) @db.Uuid
+  nome      String
+  descricao String
+
+  consultas           Consulta[]
+  tipoClassificacaoId String            @db.Uuid
+  tipoClassificacao   TipoClassificacao @relation(fields: [tipoClassificacaoId], references: [id])
+
+  @@map("classificacoes")
+}
+
+model Origem {
+  id        String @id @default(uuid()) @db.Uuid
+  descricao String
+
+  consultas Consulta[]
+
+  @@map("origens")
+}
