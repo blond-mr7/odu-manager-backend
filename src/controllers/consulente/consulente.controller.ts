@@ -1,17 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common'
+import { Controller, Get, Param,  } from '@nestjs/common'
 import { ConsulenteService } from './consulente.service'
-import { Consulente } from '@prisma/client'
+
 
 @Controller('consulente')
 export class ConsulenteController {
   constructor(private readonly consulenteService: ConsulenteService) {}
 
-  @Post()
-  create(@Body() input: Consulente) {
-    return this.consulenteService.create(input)
-  }
-
-  @Get()
+   @Get()
   findAll() {
     return this.consulenteService.findAll()
   }
@@ -19,15 +14,5 @@ export class ConsulenteController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.consulenteService.findOne(id)
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() input: Partial<Consulente>) {
-    return this.consulenteService.update(id, input)
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.consulenteService.remove(id)
   }
 }
